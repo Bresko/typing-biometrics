@@ -6,42 +6,42 @@
   (:require [clojure.java.io :as io]))
 
 
-(defn write [q]
-   (with-open [w (io/writer "C:\\Users\\ITsec\\Desktop\\temp.txt" :append true)]
-      (.write w (str q))))
+(defn write [q] ;;keylogger
+  (with-open [w (io/writer "C:\\Users\\ITsec\\Desktop\\temp.txt" :append true)]
+    (.write w (str q))))
 
-(defn write2 [ a ms1 ms2 username]
-   (with-open [w (io/writer (str "C:\\Users\\ITsec\\Desktop\\" username ".txt") :append true)]
-      (.write w (str a " " ms1 " " ms2 " \n"))))
+(defn write2 [a ms1 ms2] ;; [keyBefore currentKey] timeKeyPressed timeBeforeLastTwoKeysPressed
+  (with-open [w (io/writer (str "C:\\Users\\ITsec\\Desktop\\temp2.txt") :append true)]
+    (.write w (str a " " ms1 " " ms2 " \n"))))
 
 
 (def key-pressed "null")
 (def key-released "null")
-(def old-k "null")
+(def old-key "null")
 (def old-key-released "null")
 (def old-new "null")
 
 
 
 (defn key-action [e action] 
-  (let [k (.getRawCode e)]
-    (str (print action " " k "  "))
+  (let [current-key (.getRawCode e)]
+    (str (print action " " current-key "  " e ))
     (println (System/currentTimeMillis))
 
 
     (if (= action "key-pressed")
       (do (def key-pressed (System/currentTimeMillis))
-          (def old-new [old-k k]))
+          (def old-new [old-key current-key]))
     (do
       (def key-released (System/currentTimeMillis))
-      (write2  old-new (- key-released key-pressed) (- key-pressed old-key-released) "temp2")
+      (write2  old-new (- key-released key-pressed) (- key-pressed old-key-released))
       (def old-new []))
     
     )
 
 
 
-    (def old-k k)
+    (def old-key current-key)
     (def old-key-released key-released)
     
     
